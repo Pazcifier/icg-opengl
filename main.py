@@ -75,7 +75,7 @@ def main():
     ## Animaciones
     for obj in keys:
         animation_path = "./assets/animations/" + obj
-        # animation_handler.load_animations(animation_path)
+        animation_handler.load_animations(animation_path)
 
     ## OpenGL
     glClearColor(0, 0.55, 0.98, 1)
