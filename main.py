@@ -1,8 +1,8 @@
 import pygame
 from pygame.locals import *
 
-from OpenGL.GL import *
-from OpenGL.GLU import *
+# from OpenGL.GL import *
+# from OpenGL.GLU import *
 
 from os import listdir
 from os.path import isfile, join
@@ -10,6 +10,8 @@ from os.path import isfile, join
 from handlers.objHandlerv4 import ObjHandler
 from handlers.textureHandlerv3 import TextureHandler
 from handlers.animationHandler import AnimationHandler
+
+from controller.openglController import *
 
 # Notas del profesor:
 # Crear una clase obj que nos permita usar de controlador para realizar cambios
@@ -75,12 +77,14 @@ def main():
     ## Animaciones
     for obj in keys:
         animation_path = "./assets/animations/" + obj
-        animation_handler.load_animations(animation_path)
+        # animation_handler.load_animations(animation_path)
 
     ## OpenGL
-    glClearColor(0, 0.55, 0.98, 1)
+    # glClearColor(0, 0.55, 0.98, 1)
+    set_background_color(0, 132, 250)
     ### Texturas
-    glEnable(GL_TEXTURE_2D)
+    enable(GL_TEXTURE_2D)
+    # glEnable(GL_TEXTURE_2D)
     # glActiveTexture(GL_TEXTURE0)
     
     for obj in keys:
@@ -90,31 +94,40 @@ def main():
     texture = 0
 
     ### Iluminación
-    glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, [1,0,0,1])
-    glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, [0.1,0.1,0.1,1])
-    glMaterial(GL_FRONT_AND_BACK, GL_SPECULAR, [1,1,1,1])
-    glMaterial(GL_FRONT_AND_BACK, GL_SHININESS, 32)
+    # glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, [1,0,0,1])
+    # glMaterial(GL_FRONT_AND_BACK, GL_AMBIENT, [0.1,0.1,0.1,1])
+    # glMaterial(GL_FRONT_AND_BACK, GL_SPECULAR, [1,1,1,1])
+    # glMaterial(GL_FRONT_AND_BACK, GL_SHININESS, 32)
+    add_material([1,0,0,1], [1,1,1,1])
+    enable(GL_LIGHT0)
+    # glEnable(GL_LIGHT0)
 
-    glEnable(GL_LIGHT0)
+    # glShadeModel(GL_SMOOTH)
+    set_shade_model(GL_SMOOTH)
 
-    glShadeModel(GL_SMOOTH)
-
-    glLight(GL_LIGHT0, GL_DIFFUSE, [1,1,1,1])
-    glLight(GL_LIGHT0, GL_POSITION, [0,0,0,1])
-    glLight(GL_LIGHT0, GL_AMBIENT, [0.1,0.1,0.1,1])
-    glLight(GL_LIGHT0, GL_SPECULAR, [1,1,1,1])
+    # glLight(GL_LIGHT0, GL_DIFFUSE, [1,1,1,1])
+    # glLight(GL_LIGHT0, GL_POSITION, [0,0,0,1])
+    # glLight(GL_LIGHT0, GL_AMBIENT, [0.1,0.1,0.1,1])
+    # glLight(GL_LIGHT0, GL_SPECULAR, [1,1,1,1])
+    add_light(GL_LIGHT0, [1,1,1,1], [1,1,1,1])
+    enable(GL_LIGHTING)
 
     # glEnable(GL_LIGHTING)
 
-    glEnable(GL_DEPTH_TEST)
+    # glEnable(GL_DEPTH_TEST)
+    enable(GL_DEPTH_TEST)
     
     ### Viewport
-    glMatrixMode(GL_PROJECTION)
-    glViewport(0, 0, display[0], display[1])
-    glFrustum(-1, 1, -1, 1, 1, 1000)
+    # glMatrixMode(GL_PROJECTION)
+    set_matrix_mode(GL_PROJECTION)
+    set_viewport(display[0], display[1])
+    # glViewport(0, 0, display[0], display[1])
+    # glFrustum(-1, 1, -1, 1, 1, 1000)
+    configure_frustum(-1, 1, -1, 1, 1, 1000)
 
     # Main Loop
     while True:
+        # Pasar eventos a ObjController
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -170,23 +183,31 @@ def main():
                         load_obj_backup = load_obj
                         activeAnimation = True
 
-                # glClearColor(R,G,B,A)
-
-
         ## Configuraciones
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        glTranslatef(0.0, 0.0, -30)
-        glScale(prof, prof, prof)
-        glRotatef(angle, 0,1,0)
-        glRotatef(angle, 1, 0, 0)
+        set_matrix_mode(GL_MODELVIEW)
+        # glMatrixMode(GL_MODELVIEW)
+        # glLoadIdentity()
+        identity()
+        translate(0, 0, -30)
+        # glTranslatef(0.0, 0.0, -30)
+        # glScale(prof, prof, prof)
+        scale(prof, prof, prof)
+        #glRotatef(angle, 0,True,0)
+        #glRotatef(angle, True, 0, 0)
+        rotate(angle, False, True, False)
+        rotate(angle, True, False, False)
         angle += 0.1
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        #glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+        clear(GL_COLOR_BUFFER_BIT)
+        clear(GL_DEPTH_BUFFER_BIT)
 
         ## Activaciones
-        glEnableClientState(GL_VERTEX_ARRAY)
-        glEnableClientState(GL_NORMAL_ARRAY)
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY)
+        enable_type(GL_VERTEX_ARRAY)
+        enable_type(GL_NORMAL_ARRAY)
+        enable_type(GL_TEXTURE_COORD_ARRAY)
+        # glEnableClientState(GL_VERTEX_ARRAY)
+        # glEnableClientState(GL_NORMAL_ARRAY)
+        # glEnableClientState(GL_TEXTURE_COORD_ARRAY)
 
         ## Animaciones
         currentTime = pygame.time.get_ticks()
@@ -209,25 +230,36 @@ def main():
 
         ## Carga de vértices
         ### DrawArrays
-        glVertexPointer(3, GL_FLOAT, 0, load_obj["ArrayElements"])
+        load_vertexes(load_obj["ArrayElements"])
+        # glVertexPointer(3, GL_FLOAT, 0, load_obj["ArrayElements"])
         ### DrawElements
+        # load_vertexes(load_obj["Arrays"])
         # glVertexPointer(3, GL_FLOAT, 0, load_obj["Arrays"])
         
-        glNormalPointer(GL_FLOAT, 0, load_obj["VertexNormals"])
-        glTexCoordPointer(2, GL_FLOAT, 0, load_obj["VertexTextures"])
+        # glNormalPointer(GL_FLOAT, 0, load_obj["VertexNormals"])
+        load_normals(load_obj["VertexNormals"])
+        load_texture_coords(load_obj["VertexTextures"])
+        # glTexCoordPointer(2, GL_FLOAT, 0, load_obj["VertexTextures"])
 
         ## Dibujado
-        glBindTexture(GL_TEXTURE_2D, texture)
+        bind_texture(texture)
+        # glBindTexture(GL_TEXTURE_2D, texture)
 
-        glDrawArrays(GL_TRIANGLES, 0, len(load_obj["ArrayElements"]))
+        # glDrawArrays(GL_TRIANGLES, 0, len(load_obj["ArrayElements"]))
+        drawArrays(load_obj)
+        # drawElements(load_obj)
         # glDrawElements(GL_TRIANGLES, len(load_obj["Elements"]), GL_UNSIGNED_INT, load_obj["Elements"])
 
         ## Desactivaciones
-        glBindTexture(GL_TEXTURE_2D, 0)
+        bind_texture()
+        # glBindTexture(GL_TEXTURE_2D, 0)
         
-        glDisableClientState(GL_VERTEX_ARRAY)
-        glDisableClientState(GL_NORMAL_ARRAY)
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY)
+        disable_type(GL_VERTEX_ARRAY)
+        disable_type(GL_NORMAL_ARRAY)
+        disable_type(GL_TEXTURE_COORD_ARRAY)
+        # glDisableClientState(GL_VERTEX_ARRAY)
+        # glDisableClientState(GL_NORMAL_ARRAY)
+        # glDisableClientState(GL_TEXTURE_COORD_ARRAY)
 
         pygame.display.flip()
 
