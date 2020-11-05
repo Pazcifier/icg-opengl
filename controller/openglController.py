@@ -95,14 +95,6 @@ def disable_type(array_type):
     """
     glDisableClientState(array_type)
 
-def bind_texture(texture=0):
-    """
-    Aplica glBindTexture
-
-    texture     -- Textura del objeto (default: 0)
-    """
-    glBindTexture(GL_TEXTURE_2D, texture)
-
 # LOADERS
 
 def load_vertexes(vertexes, dimensions=3):
@@ -217,3 +209,48 @@ def set_viewport(width, height, x=0, y=0):
     y       -- Posición vertical inicial del viewport (default: 0)
     """
     glViewport(x, y, width, height)
+
+# TEXTURES
+
+def active_texture(texture):
+    """
+    Aplica glActiveTexture a la textura pasada
+
+    texture     -- El parámetro OpenGL (REQUERIDO)
+    """
+    glActiveTexture(texture)
+
+def bind_texture(texture=0):
+    """
+    Aplica glBindTexture
+
+    texture     -- Textura del objeto (default: 0)
+    """
+    glBindTexture(GL_TEXTURE_2D, texture)
+
+def generate_texture(size=1):
+    """
+    Aplica glGenTextures
+
+    size        -- Cantidad de texturas a ser generada (default: 1)
+    """
+    return glGenTextures(size)
+
+def apply_filter(filter, preference=GL_NEAREST):
+    """
+    Aplica glTexParameteri
+
+    filter      -- Primitiva de filtro de OpenGL (REQUERIDO)
+    preference  -- Primitiva de preferencia en donde aplicar el filtro (default: GL_NEAREST)
+    """
+    glTexParameteri(GL_TEXTURE_2D, filter, preference)
+
+def apply_texture(height, width, image):
+    """
+    Aplica glTexImage2D
+
+    height      -- Altura de la textura (REQUERIDO)
+    width       -- Anchura de la textura (REQUERIDO)
+    image       -- Imagen de la textura (REQUERIDO)
+    """
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, height, width, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)

@@ -12,6 +12,7 @@ from handlers.textureHandlerv3 import TextureHandler
 from handlers.animationHandler import AnimationHandler
 
 from controller.openglController import *
+from controller.objController import ObjController
 
 # Notas del profesor:
 # Crear una clase obj que nos permita usar de controlador para realizar cambios
@@ -58,26 +59,34 @@ def main():
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
     ## Parsers
-    obj_handler = ObjHandler()
-    texture_handler = TextureHandler()
-    animation_handler = AnimationHandler(obj_handler)
+    # obj_handler = ObjHandler()
+    box = ObjController()
+    # texture_handler = TextureHandler()
+    # animation_handler = AnimationHandler(obj_handler)
     # texture_handler = TextureHandler(obj_handler)
 
     # obj_handler.load_objs('./assets/models')
-    objs_path = "./assets/models/"
-    obj_files = [f for f in listdir(objs_path) if isfile(join(objs_path, f))]
+    box.load_model("./assets/models/box_texturas.obj")
+    box.load_textures("./assets/textures/box")
 
-    for file in obj_files:
-        obj_path = objs_path + file
-        obj_handler.load_obj(obj_path)
+    box2 = box
 
-    keys = obj_handler.get_all()
-    load_obj = obj_handler.get_obj(keys[actual_obj])
+    box.bind_texture(GL_TEXTURE0, "box_old")
+    box2.bind_texture(GL_TEXTURE0, "box")
+    # objs_path = "./assets/models/"
+    # obj_files = [f for f in listdir(objs_path) if isfile(join(objs_path, f))]
+
+    # for file in obj_files:
+    #     obj_path = objs_path + file
+    #     obj_handler.load_obj(obj_path)
+
+    # keys = obj_handler.get_all()
+    # load_obj = obj_handler.get_obj(keys[actual_obj])
 
     ## Animaciones
-    for obj in keys:
-        animation_path = "./assets/animations/" + obj
-        # animation_handler.load_animations(animation_path)
+    # for obj in keys:
+    #     animation_path = "./assets/animations/" + obj
+    #     # animation_handler.load_animations(animation_path)
 
     ## OpenGL
     # glClearColor(0, 0.55, 0.98, 1)
@@ -87,11 +96,11 @@ def main():
     # glEnable(GL_TEXTURE_2D)
     # glActiveTexture(GL_TEXTURE0)
     
-    for obj in keys:
-        texture_path = "./assets/textures/" + obj
-        texture_handler.load_textures(obj_handler.get_obj(obj), texture_path)
-    # texture_handler.load_textures('./assets/textures')
-    texture = 0
+    # for obj in keys:
+    #     texture_path = "./assets/textures/" + obj
+    #     texture_handler.load_textures(obj_handler.get_obj(obj), texture_path)
+    # # texture_handler.load_textures('./assets/textures')
+    # texture = 0
 
     ### Iluminación
     # glMaterial(GL_FRONT_AND_BACK, GL_DIFFUSE, [1,0,0,1])
@@ -168,19 +177,19 @@ def main():
                         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
                 if event.key == pygame.K_t:
                     glActiveTexture(GL_TEXTURE0)
-                    texture = texture_handler.bind_texture(load_obj, actual_texture)
+                    texture = texture_handler.bind_texture(box, actual_texture)
                     glBindTexture(GL_TEXTURE_2D, texture)
                     if (texture > 0):
                         actual_texture += 1
-                        if (actual_texture >= load_obj["TextureImage"]["Total"]):
+                        if (actual_texture >= box["TextureImage"]["Total"]):
                             actual_texture = 0
                 if event.key == pygame.K_m:
                     if (not activeAnimation):
-                        obj_animations = load_obj["Animations"]
+                        obj_animations = box["Animations"]
                         all_categories = len(obj_animations["Keys"]) - 1
                         all_frames = obj_animations["Categories"][category]["Frames"]
                         max_frames = len(all_frames) - 1
-                        load_obj_backup = load_obj
+                        load_obj_backup = box
                         activeAnimation = True
 
         ## Configuraciones
@@ -214,45 +223,53 @@ def main():
         deltaT += currentTime - lastTime
         lastTime = currentTime
 
-        if activeAnimation:
-            if (deltaT > 100):
-                deltaT = 0
-                load_obj = all_frames[frame]
-                frame += 1
-                # print(frame)
-                if (frame > max_frames):
-                    frame = 0
-                    activeAnimation = False
-                    load_obj = load_obj_backup
-                    category += 1
-                    if (category > all_categories):
-                        category = 0
+        # if activeAnimation:
+        #     if (deltaT > 100):
+        #         deltaT = 0
+        #         load_obj = all_frames[frame]
+        #         frame += 1
+        #         # print(frame)
+        #         if (frame > max_frames):
+        #             frame = 0
+        #             activeAnimation = False
+        #             load_obj = load_obj_backup
+        #             category += 1
+        #             if (category > all_categories):
+        #                 category = 0
 
         ## Carga de vértices
         ### DrawArrays
-        load_vertexes(load_obj["ArrayElements"])
+        load_vertexes(box.get_obj()["ArrayElements"])
         # glVertexPointer(3, GL_FLOAT, 0, load_obj["ArrayElements"])
         ### DrawElements
         # load_vertexes(load_obj["Arrays"])
         # glVertexPointer(3, GL_FLOAT, 0, load_obj["Arrays"])
         
         # glNormalPointer(GL_FLOAT, 0, load_obj["VertexNormals"])
-        load_normals(load_obj["VertexNormals"])
-        load_texture_coords(load_obj["VertexTextures"])
+        load_normals(box.get_obj()["VertexNormals"])
+        load_texture_coords(box.get_obj()["VertexTextures"])
         # glTexCoordPointer(2, GL_FLOAT, 0, load_obj["VertexTextures"])
 
         ## Dibujado
-        bind_texture(texture)
+        # bind_texture(texture)
         # glBindTexture(GL_TEXTURE_2D, texture)
 
         # glDrawArrays(GL_TRIANGLES, 0, len(load_obj["ArrayElements"]))
-        drawArrays(load_obj)
+        drawArrays(box.get_obj())
         # drawElements(load_obj)
         # glDrawElements(GL_TRIANGLES, len(load_obj["Elements"]), GL_UNSIGNED_INT, load_obj["Elements"])
 
         ## Desactivaciones
-        bind_texture()
+        # bind_texture()
         # glBindTexture(GL_TEXTURE_2D, 0)
+
+        translate(10, 0, 0)
+        load_vertexes(box2.get_obj()["ArrayElements"])
+        load_normals(box2.get_obj()["VertexNormals"])
+        load_texture_coords(box2.get_obj()["VertexTextures"])
+
+        drawArrays(box2.get_obj())
+
         
         disable_type(GL_VERTEX_ARRAY)
         disable_type(GL_NORMAL_ARRAY)

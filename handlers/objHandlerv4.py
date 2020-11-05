@@ -44,6 +44,7 @@ class ObjHandler():
             while("" in line_info):
                 line_info.remove('')
             self.__load_line(line_type, line_info)
+        return self.__save()
         if (not animation):
             self.__eof()
         else:
@@ -149,21 +150,35 @@ class ObjHandler():
     def __save(self):
         # Guarda el objeto cargado
         print("GUARDANDO DATOS EN CLAVE:", self.__name)
-        self.__loaded.update({ 
-            self.__name: {
-                "Name": self.__name,
-                "Arrays": self.__arrays, 
-                "Elements": self.__elements, 
-                "ArrayElements": self.__arrayElements,
-                "Normals": self.__normals,
-                "FaceNormals": self.__faceNormals,
-                "VertexNormals": self.__vertexNormals,
-                "Textures": self.__textures,
-                "FaceTextures": self.__faceTextures,
-                "VertexTextures": self.__vertexTextures
-            } 
-        })
-        self.__reset()
+        object = {
+            "Name": self.__name,
+            "Arrays": self.__arrays, 
+            "Elements": self.__elements, 
+            "ArrayElements": self.__arrayElements,
+            "Normals": self.__normals,
+            "FaceNormals": self.__faceNormals,
+            "VertexNormals": self.__vertexNormals,
+            "Textures": self.__textures,
+            "FaceTextures": self.__faceTextures,
+            "VertexTextures": self.__vertexTextures
+        }
+
+        return object
+        # self.__loaded.update({ 
+        #     self.__name: {
+        #         "Name": self.__name,
+        #         "Arrays": self.__arrays, 
+        #         "Elements": self.__elements, 
+        #         "ArrayElements": self.__arrayElements,
+        #         "Normals": self.__normals,
+        #         "FaceNormals": self.__faceNormals,
+        #         "VertexNormals": self.__vertexNormals,
+        #         "Textures": self.__textures,
+        #         "FaceTextures": self.__faceTextures,
+        #         "VertexTextures": self.__vertexTextures
+        #     } 
+        # })
+        # self.__reset()
 
     def __build_object(self, filename):
         # Retorna el objeto en vez de guardarlo (ANIMACIONES)
