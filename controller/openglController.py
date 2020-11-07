@@ -55,18 +55,24 @@ def configure_frustum(left, right, bottom, top, distNear, distFar):
 
 def drawArrays(obj):
     """
-    Dibuja el objeto mediante glDrawArrays
+    Carga y dibuja el objeto mediante glDrawArrays
 
     obj     -- Objeto a dibujar (REQUERIDO)
     """
+    __load_vertexes(obj["ArrayElements"])
+    __load_normals(obj["VertexNormals"])
+    __load_texture_coords(obj["VertexTextures"])
     glDrawArrays(GL_TRIANGLES, 0, len(obj["ArrayElements"]))
 
 def drawElements(obj):
     """
-    Dibuja el objeto mediante glDrawElements
+    Carga y dibuja el objeto mediante glDrawElements
 
     obj     -- Objeto a dibujar (REQUERIDO)
     """
+    __load_vertexes(obj["Arrays"])
+    __load_normals(obj["VertexNormals"])
+    __load_texture_coords(obj["VertexTextures"])
     glDrawElements(GL_TRIANGLES, len(obj["Elements"]), GL_UNSIGNED_INT, obj["Elements"])
 
 # ENABLERS
@@ -97,7 +103,7 @@ def disable_type(array_type):
 
 # LOADERS
 
-def load_vertexes(vertexes, dimensions=3):
+def __load_vertexes(vertexes, dimensions=3):
     """
     Carga los vértices del objeto
 
@@ -106,7 +112,7 @@ def load_vertexes(vertexes, dimensions=3):
     """
     glVertexPointer(dimensions, GL_FLOAT, 0, vertexes)
 
-def load_normals(vertexes):
+def __load_normals(vertexes):
     """
     Carga las normales del objeto
 
@@ -114,7 +120,7 @@ def load_normals(vertexes):
     """
     glNormalPointer(GL_FLOAT, 0, vertexes)
 
-def load_texture_coords(vertexes, dimensions=2):
+def __load_texture_coords(vertexes, dimensions=2):
     """
     Carga las coordenadas de textura del objeto
 

@@ -25,16 +25,14 @@ class ObjHandler():
         self.__textures = []
         self.__faceTextures = []
         self.__vertexTextures = []
-        
-        self.__loaded = {}
 
-    def load_obj(self, file, animation=False):
+    def load_obj(self, file):
         print("INCIO DE CARGA DE", file)
         f = open(file, "r")
-        if (animation):
-            filename = file.split("/")[4]
-        else:
-            filename = file.split("/")[3]
+
+        filename = file.split("/")[-1]
+        filename = filename.split(".")[0]
+
         self.__name = filename
         file_lines = f.readlines()
         for line in file_lines:
@@ -45,10 +43,6 @@ class ObjHandler():
                 line_info.remove('')
             self.__load_line(line_type, line_info)
         return self.__save()
-        if (not animation):
-            self.__eof()
-        else:
-            return self.__build_object(filename)
             
 
     def __load_line(self, line_type, line):
@@ -142,13 +136,9 @@ class ObjHandler():
         comment = " ".join(line)
         print("COMENTARIO DEL ARCHIVO:", comment)
 
-    def __eof(self):
-        #Revisión de última línea
-        print("FIN DE CARGA DE ARCHIVO")
-        self.__save()
-
     def __save(self):
         # Guarda el objeto cargado
+        print("FIN DE CARGA DE ARCHIVO")
         print("GUARDANDO DATOS EN CLAVE:", self.__name)
         object = {
             "Name": self.__name,
@@ -163,46 +153,6 @@ class ObjHandler():
             "VertexTextures": self.__vertexTextures
         }
 
-        return object
-        # self.__loaded.update({ 
-        #     self.__name: {
-        #         "Name": self.__name,
-        #         "Arrays": self.__arrays, 
-        #         "Elements": self.__elements, 
-        #         "ArrayElements": self.__arrayElements,
-        #         "Normals": self.__normals,
-        #         "FaceNormals": self.__faceNormals,
-        #         "VertexNormals": self.__vertexNormals,
-        #         "Textures": self.__textures,
-        #         "FaceTextures": self.__faceTextures,
-        #         "VertexTextures": self.__vertexTextures
-        #     } 
-        # })
-        # self.__reset()
-
-    def __build_object(self, filename):
-        # Retorna el objeto en vez de guardarlo (ANIMACIONES)
-
-        # Cleansing del nombre del archivo
-        splitted_name = filename.split("_")
-        splitted_name = splitted_name[1:]
-        separator = "_"
-        name = separator.join(splitted_name)
-
-        self.__name = name.split(".")[0]
-
-        object = {
-            "Name": self.__name,
-            "Arrays": self.__arrays, 
-            "Elements": self.__elements, 
-            "ArrayElements": self.__arrayElements,
-            "Normals": self.__normals,
-            "FaceNormals": self.__faceNormals,
-            "VertexNormals": self.__vertexNormals,
-            "Textures": self.__textures,
-            "FaceTextures": self.__faceTextures,
-            "VertexTextures": self.__vertexTextures
-        }
         self.__reset()
         return object
     
@@ -219,11 +169,3 @@ class ObjHandler():
         self.__textures = []
         self.__faceTextures = []
         self.__vertexTextures = []
-
-    def get_obj(self, obj_name):
-        # Obtención de un objeto guardado
-        return self.__loaded[obj_name]
-
-    def get_all(self):
-        # Obtención de todas las keys
-        return list(self.__loaded.keys())

@@ -6,7 +6,7 @@
 from os import listdir, name
 from os.path import isfile, join, isdir, split, splitdrive
 
-import pygame
+from handlers.objHandlerv4 import ObjHandler
 
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -20,68 +20,68 @@ def file_sort(value):
     return (name_first, int(number_second))
 
 class AnimationHandler(object):
-    def __init__(self, obj_handler):
-        self.__obj_handler = obj_handler
-        self.__obj = ""
+    def __init__(self):
+        self.__obj_handler = ObjHandler()
         self.__frame = None
-        self.__animation_obj = {
-            "Category": "",
-            "Frames": []
-        }
 
-    def load_animations(self, assets_path):
+        self.__currentCategory = None
+        self.__framesOfCategory = []
+        self.__allAnimations = {}
+
+    def load_animations(self, obj, assets_path):
         try:
             onlyfiles = [f for f in listdir(assets_path) if isfile(join(assets_path, f))]
         except FileNotFoundError:
             print("No se encontró la ruta de animaciones denotada por:", assets_path)
             return
 
-        self.__obj = self.__obj_handler.get_obj(assets_path.split("/")[-1])
-        self.__obj["Animations"] = {
-            "Keys": [],
-            "Categories": []
-        }
+        obj["Animations"] = {}
 
-        print("CARGANDO ANIMACIONES DE:", self.__obj["Name"])
+        print("CARGANDO ANIMACIONES DE:", obj["Name"])
 
         for file in sorted(onlyfiles, key=file_sort): # Después de todo este loop, resetear todo
             print("CARGANDO FRAME:", file)
             file_path = assets_path + "/" + file
-            self.__frame = self.__obj_handler.load_obj(file_path, True)
+            self.__frame = self.__obj_handler.load_obj(file_path)
 
-            animation_category = self.__frame["Name"].split("_")[0]
+            filename = self.__frame["Name"]
+            filename = filename.split("/")[-1]
 
-            if animation_category != self.__animation_obj["Category"]:
+            base = filename.split("_")[1:]
+            
+            filename = "_".join(base)
+            animation_category = "_".join(base[0:-1])
+
+            self.__frame["Name"] = filename
+
+            if animation_category != self.__currentCategory:
                 print("Nueva categoría", animation_category)
-                self.__obj["Animations"]["Keys"] = self.__obj["Animations"]["Keys"] + [animation_category]
-                if len(self.__animation_obj["Category"]) == 0:
-                    self.__animation_obj["Category"] = animation_category
-                else:
-                    self.__load_animation()
-                    self.__animation_obj["Category"] = animation_category
+                self.__load_category()
+                self.__currentCategory = animation_category
 
             self.__add_frame()
         
-        self.__load_animation()
+        self.__load_category()
+        self.__load_animation(obj)
         self.__reset()
             
     def __add_frame(self):
-        self.__animation_obj["Frames"] = self.__animation_obj["Frames"] + [self.__frame]
+        # print(self.__frame)
+        self.__framesOfCategory = self.__framesOfCategory + [self.__frame]
 
-    def __load_animation(self):
-        print("CARGANDO ANIMACIÓN", self.__animation_obj["Category"])
-        self.__obj["Animations"]["Categories"] = self.__obj["Animations"]["Categories"] + [self.__animation_obj]
+    def __load_category(self):
+        if (self.__currentCategory != None):
+            print("CARGANDO ANIMACIÓN", self.__currentCategory)
 
-        # print(self.__obj["Animations"])
+            category = {
+                self.__currentCategory: self.__framesOfCategory
+            }
 
-        self.__animation_obj = {
-            "Category": "",
-            "Frames": []
-        }
+            self.__allAnimations.update(category)
+            self.__reset()
+
+    def __load_animation(self, obj):
+        obj["Animations"] = self.__allAnimations
 
     def __reset(self):
-        self.__frame = None
-        self.__animation_obj = {
-            "Category": "",
-            "Frames": []
-        }
+        self.__framesOfCategory = []
