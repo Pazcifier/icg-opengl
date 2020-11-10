@@ -1,4 +1,3 @@
-from controller.animController import AnimationController
 import pygame
 from pygame.locals import *
 
@@ -8,11 +7,12 @@ from pygame.locals import *
 from os import listdir
 from os.path import isfile, join
 
+from handlers.objHandlerv4 import ObjHandler
+from handlers.textureHandlerv3 import TextureHandler
+from handlers.animationHandler import AnimationHandler
+
 from controller.openglController import *
 from controller.objController import ObjController
-from controller.animController import AnimationController
-
-# from camera.trackBall import TrackBall
 
 # Notas del profesor:
 # Crear una clase obj que nos permita usar de controlador para realizar cambios
@@ -20,13 +20,22 @@ from controller.animController import AnimationController
 # No es necesario tener debug en la entrega final
 # Mientras más cosas al final, mejor!!
 
-# Siguiente pasos
-# Rework de las cámaras para que sean referentes a un modelo
-
 def main():
     # Configuraciones
-    angle = 0
+    zEnable = False
+    clockW = False
+    lineMode = False
     prof = 1
+    angle = 0
+    actual_obj = 0
+    actual_texture = 0
+
+    currentTime = 0
+    deltaT = 0
+    lastTime = 0
+    frame = -1
+    category = 0
+    activeAnimation = False
 
     # Inicialización
     ## Pygame
@@ -35,17 +44,27 @@ def main():
     pygame.display.set_mode(display, DOUBLEBUF|OPENGL)
 
     ## Parsers
-    playerController = ObjController(True)
+    boxController = ObjController()
 
-    playerController.load_model("./assets/models/hueteotl_stand_0.obj")
-    playerController.load_textures("./assets/textures/hueteotl")
+    boxController.load_model("./assets/models/box_texturas.obj")
+    boxController.load_textures("./assets/textures/box")
+
+    boxController.bind_texture(GL_TEXTURE0, "box")
+
+    box1 = boxController.get_obj()
+
+    boxController.bind_texture(GL_TEXTURE1, "box_old")
+
+    box2 = boxController.get_obj()
+    # playerController = ObjController()
+
+    # playerController.load_model("./assets/models/hueteotl_stand_0.obj")
+    # playerController.load_textures("./assets/textures/hueteotl")
     # playerController.load_animations("./assets/animations/hueteotl")
 
-    playerController.bind_texture(GL_TEXTURE0, "hueteotl")
+    # playerController.bind_texture(GL_TEXTURE0, "hueteotl")
 
-    player = playerController.get_obj()
-
-    animationController = AnimationController(player, playerController.get_actions())
+    # player = playerController.get_obj()
 
     ## OpenGL
     set_background_color(0, 132, 250)
@@ -53,15 +72,12 @@ def main():
     enable(GL_TEXTURE_2D)
 
     ### Iluminación
-    add_material([1,1,1,1], [1,1,1,1])
+    add_material([1,0,0,1], [1,1,1,1])
+    enable(GL_LIGHT0)
+
     set_shade_model(GL_SMOOTH)
 
-    enable(GL_LIGHT0)
-    add_light(GL_LIGHT0, [1,0,0,1], [1,1,1,1])
-
-    enable(GL_LIGHT1)
-    add_light(GL_LIGHT1, [0,0,1,1], [1,1,1,1])
-
+    add_light(GL_LIGHT0, [1,1,1,1], [1,1,1,1])
     enable(GL_LIGHTING)
 
     enable(GL_DEPTH_TEST)
@@ -79,7 +95,7 @@ def main():
                 quit()
             
             keys = pygame.key.get_pressed()
-            playerController.controls(keys, event.type)
+            boxController.controls(keys, event.type)
         # Pasar eventos a ObjController
         # for event in pygame.event.get():
         #     if event.type == pygame.QUIT:
@@ -140,11 +156,11 @@ def main():
         set_matrix_mode(GL_MODELVIEW)
 
         identity()
-        translate(0, 0, -30)
+        translate(0, 0, -5)
         scale(prof, prof, prof)
         rotate(-90, True, False, False)
         # rotate(angle, True, False, False)
-        angle += 0.1
+        # angle += 0.1
 
         clear(GL_COLOR_BUFFER_BIT)
         clear(GL_DEPTH_BUFFER_BIT)
@@ -155,16 +171,24 @@ def main():
         enable_type(GL_TEXTURE_COORD_ARRAY)
 
         ## Animaciones
-        if playerController.hasAnimations():
-            player = animationController.play_animation(playerController.get__action())
+        currentTime = pygame.time.get_ticks()
+        deltaT += currentTime - lastTime
+        lastTime = currentTime
+
+        if boxController.hasAnimations():
+            if (deltaT > 100):
+                deltaT = 0
+                frame_animation = boxController.play_frame(frame)
+                frame = frame_animation[0]
+                player = frame_animation[1]
 
         ## Dibujado
-        playerController.load_camera()
-        # drawPlane()
-        # translate(0, 0, 20)
-        drawArrays(player)
 
-        # translate(10, 0, 0)
+        drawArrays(box1)
+
+        translate(0, 0, 2)
+
+        drawArrays(box2)
 
         # drawArrays(box2.get_obj())
 

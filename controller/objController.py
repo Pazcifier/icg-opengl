@@ -1,9 +1,12 @@
+from camera.trackBall import TrackBall
 import pygame
 from pygame.locals import *
 
 from handlers.objHandlerv4 import ObjHandler
 from handlers.textureHandlerv3 import TextureHandler
 from handlers.animationHandler import AnimationHandler
+
+from camera.trackBall import TrackBall
 
 # Hacer un AnimationController
 
@@ -18,15 +21,16 @@ action = {
 }
 
 class ObjController():
-    def __init__(self):
+    def __init__(self, camera=False):
         self.__obj_handler = ObjHandler()
         self.__texture_handler = TextureHandler()
         self.__animation_handler = AnimationHandler()
 
-        self.__obj = {}
+        if camera:
+            self.__camera = TrackBall([0,0,0], 10, 90, 1)
 
+        self.__obj = {}
         self.__action = action["NONE"]
-        self.__animation = None
 
         self.__hasAnimations = False
         self.__hasTextures = False
@@ -35,6 +39,15 @@ class ObjController():
 
     def get_obj(self):
         return self.__obj
+
+    def get_actions(self):
+        return action
+
+    def get__action(self):
+        return self.__action
+
+    def load_camera(self):
+        self.__camera.loadMatrix()
 
     def load_model(self, path):
         self.__obj = self.__obj_handler.load_obj(path)
@@ -52,40 +65,6 @@ class ObjController():
 
     def hasAnimations(self):
         return self.__hasAnimations
-
-    def play_frame(self, frame):
-        numberFrames = len(self.__animation) - 1
-        frame += 1
-
-        if (frame >  numberFrames):
-            frame = 0
-        
-        return (frame, self.__animation[frame])
-
-    def __select_animation(self):
-        animations = self.__obj["Animations"]
-
-        if self.__action == action["NONE"]:
-            self.__animation = animations["stand"]
-
-        if self.__action == action["MOVE"]:
-            self.__animation = animations["run"]
-        
-        if self.__action == action["CROUCH"]:
-            self.__animation = animations["crouch_stand"]
-
-        if self.__action == action["CROUCH_MOVE"]:
-            self.__animation = animations["crouch_walk"]
-
-        if self.__action == action["JUMP"]:
-            self.__animation = animations["jump"]
-        
-        if self.__action == action["PRAISE"]:
-            self.__animation = animations["wave"]
-
-        if self.__action == action["TAUNT"]:
-            self.__animation = animations["flip"]
-
 
     def controls(self, keys, event):
         if event == pygame.KEYUP:
@@ -131,9 +110,6 @@ class ObjController():
             if keys[pygame.K_SPACE]:
                 self.__action = action["JUMP"]
                 self.__reset_states()
-
-        if (self.__hasAnimations):
-            self.__select_animation()
 
     def __reset_states(self):
         self.__crouch = False

@@ -32,9 +32,9 @@ def add_light(light, diffuse=[], specular=[], position=[0,0,0,1]):
     position    -- Posición de la luz (default: [0,0,0,1])
     """
     if ((diffuse != []) and (len(diffuse) == 4)):
-        glLight(light, GL_DIFFUSE, [1,1,1,1])
+        glLight(light, GL_DIFFUSE, diffuse)
     if ((specular != []) and (len(specular) == 4)):
-        glLight(light, GL_SPECULAR, [1,1,1,1])
+        glLight(light, GL_SPECULAR, specular)
 
     glLight(light, GL_POSITION, position)
     glLight(light, GL_AMBIENT, [0.1,0.1,0.1,1])
@@ -52,6 +52,17 @@ def configure_frustum(left, right, bottom, top, distNear, distFar):
     glFrustum(left, right, bottom, top, distNear, distFar)
 
 # DRAWERS
+
+def drawPlane():
+    """
+    Dibuja un plano en la escena
+    """
+    glBegin(GL_QUADS)
+    glVertex3f(-1000, 1000, 0)
+    glVertex3f( 1000, 1000, 0)
+    glVertex3f(1000, -1000, 0)
+    glVertex3f(-1000, -1000, 0)
+    glEnd()
 
 def drawArrays(obj):
     """
