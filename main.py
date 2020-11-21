@@ -1,12 +1,5 @@
-from controller.animController import AnimationController
 import pygame
 from pygame.locals import *
-
-# from OpenGL.GL import *
-# from OpenGL.GLU import *
-
-from os import listdir
-from os.path import isfile, join
 
 from controller.openglController import *
 from controller.objController import ObjController
@@ -24,10 +17,7 @@ from controller.animController import AnimationController
 # Rework de las cámaras para que sean referentes a un modelo
 
 def main():
-    # Configuraciones
     angle = 0
-    prof = 1
-
     # Inicialización
     ## Pygame
     pygame.init()
@@ -36,14 +26,17 @@ def main():
 
     ## Parsers
     playerController = ObjController(True)
+    planeController = ObjController(False, True)
 
     playerController.load_model("./assets/models/hueteotl_stand_0.obj")
     playerController.load_textures("./assets/textures/hueteotl")
     # playerController.load_animations("./assets/animations/hueteotl")
 
-    playerController.bind_texture(GL_TEXTURE0, "hueteotl")
+    planeController.load_model("./assets/models/plane.obj")
+    planeController.load_textures("./assets/textures/plane")
 
     player = playerController.get_obj()
+    plane = planeController.get_obj()
 
     animationController = AnimationController(player, playerController.get_actions())
 
@@ -56,11 +49,14 @@ def main():
     add_material([1,1,1,1], [1,1,1,1])
     set_shade_model(GL_SMOOTH)
 
-    enable(GL_LIGHT0)
-    add_light(GL_LIGHT0, [1,0,0,1], [1,1,1,1])
+    # enable(GL_LIGHT0)
+    # add_light(GL_LIGHT0, [1,0,0,1], [1,1,1,1])
 
-    enable(GL_LIGHT1)
-    add_light(GL_LIGHT1, [0,0,1,1], [1,1,1,1])
+    # enable(GL_LIGHT1)
+    # add_light(GL_LIGHT1, [0,0,1,1], [1,1,1,1])
+
+    enable(GL_LIGHT0)
+    add_light(GL_LIGHT0, [1,1,1,1], [1,1,1,1])
 
     enable(GL_LIGHTING)
 
@@ -141,10 +137,10 @@ def main():
 
         identity()
         translate(0, 0, -30)
-        scale(prof, prof, prof)
         rotate(-90, True, False, False)
-        # rotate(angle, True, False, False)
         angle += 0.1
+
+        # playerController.get_camera().elev = angle
 
         clear(GL_COLOR_BUFFER_BIT)
         clear(GL_DEPTH_BUFFER_BIT)
@@ -160,8 +156,13 @@ def main():
 
         ## Dibujado
         playerController.load_camera()
-        # drawPlane()
-        # translate(0, 0, 20)
+        translate(0, 0, -24)
+        planeController.bind_texture(GL_TEXTURE0, "grass")
+        drawArrays(plane)
+        translate(0, 0, 24)
+
+        playerController.load_character()
+        playerController.bind_texture(GL_TEXTURE0, "hueteotl")
         drawArrays(player)
 
         # translate(10, 0, 0)

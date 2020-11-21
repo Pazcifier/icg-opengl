@@ -11,8 +11,9 @@
 # Agregar propiedades para que tengamos los vértices listos para hacer DrawElements y otro para DrawArrays
 
 class ObjHandler():
-    def __init__(self):
+    def __init__(self, repeat=False):
         self.__name = ""
+        self.__repeatTexture = repeat
         # self.__numVertx = 0
         # self.__numFaces = 0
 
@@ -82,8 +83,12 @@ class ObjHandler():
         self.__normals = self.__normals + [(float(line[0]), float(line[1]), float(line[2]))]
 
     def __load_vertextexture(self, line):
-        textureW = max(0, min(float(line[0]), 1))
-        textureH = max(0, min(float(line[1]), 1))
+        if self.__repeatTexture:
+            textureW = float(line[0])
+            textureH = float(line[1])
+        else:
+            textureW = max(0, min(float(line[0]), 1))
+            textureH = max(0, min(float(line[1]), 1))
         #Carga de texturas
         self.__textures = self.__textures + [(textureW, textureH)]
 
@@ -97,10 +102,9 @@ class ObjHandler():
                     self.__load_face_textures(faces)
                 else:
                     self.__load_face_normals(faces)
-            else:         
-                for face in line:
-                    self.__elements = self.__elements + [(int(face) - 1)]
-                    self.__arrayElements = self.__arrayElements + [self.__arrays[int(face) - 1]]
+            else:
+                self.__elements = self.__elements + [(int(face) - 1)]
+                self.__arrayElements = self.__arrayElements + [self.__arrays[int(face) - 1]]
 
     def __load_face_normals(self, faces):
         vertexFace = faces[0]

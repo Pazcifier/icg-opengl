@@ -53,17 +53,6 @@ def configure_frustum(left, right, bottom, top, distNear, distFar):
 
 # DRAWERS
 
-def drawPlane():
-    """
-    Dibuja un plano en la escena
-    """
-    glBegin(GL_QUADS)
-    glVertex3f(-1000, 1000, 0)
-    glVertex3f( 1000, 1000, 0)
-    glVertex3f(1000, -1000, 0)
-    glVertex3f(-1000, -1000, 0)
-    glEnd()
-
 def drawArrays(obj):
     """
     Carga y dibuja el objeto mediante glDrawArrays

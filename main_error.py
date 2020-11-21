@@ -49,11 +49,11 @@ def main():
     boxController.load_model("./assets/models/box_texturas.obj")
     boxController.load_textures("./assets/textures/box")
 
-    boxController.bind_texture(GL_TEXTURE0, "box")
+    # boxController.bind_texture(GL_TEXTURE0, "box")
 
     box1 = boxController.get_obj()
 
-    boxController.bind_texture(GL_TEXTURE1, "box_old")
+    # boxController.bind_texture(GL_TEXTURE1, "box_old")
 
     box2 = boxController.get_obj()
     # playerController = ObjController()
@@ -183,11 +183,12 @@ def main():
                 player = frame_animation[1]
 
         ## Dibujado
-
+        boxController.bind_texture(GL_TEXTURE0, "box")
         drawArrays(box1)
 
         translate(0, 0, 2)
 
+        boxController.bind_texture(GL_TEXTURE0, "box_old")
         drawArrays(box2)
 
         # drawArrays(box2.get_obj())
