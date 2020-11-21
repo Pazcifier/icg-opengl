@@ -1,0 +1,80 @@
+{
+	"Name": nombre_obj,
+	"Arrays": vértices,
+	"Elements": índices,
+	"ArrayElements": vértices + índices,
+	"Normals": vértices de normales,
+	"FaceNormals": índices normales,
+	"VertexNormals": normales + índices,
+	"Textures": vértices de texturas,
+	"FaceTextures": índice texturas,
+	"VertexTextures": texturas + índices,
+	-----
+	"Textures": {
+		"Nombre Textura": {
+			"Image": imagen cargada de la textura
+			"Heigh": alto
+			"Width": ancho
+		},
+		"Nombre Textura": {
+			"Image": imagen cargada de la textura
+			"Heigh": alto
+			"Width": ancho
+		},
+	}
+	-----
+	"Animations": {
+		"Nombre Categoría": [
+			{
+				"Name": nombre frame01,
+				"Arrays": vértices,
+				"Elements": índices,
+				"ArrayElements": vértices + índices,
+				"Normals": vértices de normales,
+				"FaceNormals": índices normales,
+				"VertexNormals": normales + índices,
+				"Textures": vértices de texturas,
+				"FaceTextures": índice texturas,
+				"VertexTextures": texturas + índices,
+			},
+			{
+				"Name": nombre frame02,
+				"Arrays": vértices,
+				"Elements": índices,
+				"ArrayElements": vértices + índices,
+				"Normals": vértices de normales,
+				"FaceNormals": índices normales,
+				"VertexNormals": normales + índices,
+				"Textures": vértices de texturas,
+				"FaceTextures": índice texturas,
+				"VertexTextures": texturas + índices,
+			},
+		],
+		"Nombre Categoría": [
+			{
+				"Name": nombre frame01,
+				"Arrays": vértices,
+				"Elements": índices,
+				"ArrayElements": vértices + índices,
+				"Normals": vértices de normales,
+				"FaceNormals": índices normales,
+				"VertexNormals": normales + índices,
+				"Textures": vértices de texturas,
+				"FaceTextures": índice texturas,
+				"VertexTextures": texturas + índices,
+			},
+			{
+				"Name": nombre frame02,
+				"Arrays": vértices,
+				"Elements": índices,
+				"ArrayElements": vértices + índices,
+				"Normals": vértices de normales,
+				"FaceNormals": índices normales,
+				"VertexNormals": normales + índices,
+				"Textures": vértices de texturas,
+				"FaceTextures": índice texturas,
+				"VertexTextures": texturas + índices,
+			},
+		]
+	}
+}

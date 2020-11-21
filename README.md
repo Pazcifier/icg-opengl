@@ -27,8 +27,8 @@ Las dos últimas contienen módulos dependiendo del modelo que le pertenezcan.
     - **openglController.py** encargado de todas las operaciones del framework OpenGL, entre ellas la adición de luces, mapeo de texturas y operaciones de matrices
     - **animController.py** encargado de la reproducción de las animaciones a partir de la acción que se le provea
 - Carpeta **handlers**, contiene los parsers y manejadores de los objetos, estos sirven más que nada para la carga inicial
-    - **objHandler.py**, encargado de la carga del modelo principal del objeto, parsea el archivo .obj para obtener sus vértices, texturas y normales (la última versión es la v4)
-    - **textureHandler.py**, encargado de la carga de texturas de un objeto, y añadir esos parámetros a la estructura principal del objeto (la última versión es la v4)
+    - **objHandler.py**, encargado de la carga del modelo principal del objeto, parsea el archivo .obj para obtener sus vértices, texturas y normales (la última versión es la **v4**)
+    - **textureHandler.py**, encargado de la carga de texturas de un objeto, y añadir esos parámetros a la estructura principal del objeto (la última versión es la **v3**)
     - **animationHandler.py**, encargado de la carga de cada uno de los frames y el ordenamiento de ellos, además de la adición de estos parámetros en la estructura principal del objeto
 - Carpeta **referencias**, contiene referencias vistas en clases y otros archivos que profundizan en aspectos del proyecto
 
