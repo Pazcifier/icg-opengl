@@ -11,8 +11,9 @@
 # Agregar propiedades para que tengamos los vértices listos para hacer DrawElements y otro para DrawArrays
 
 class ObjHandler():
-    def __init__(self):
+    def __init__(self, repeat=False):
         self.__name = ""
+        self.__repeatTexture = repeat
         # self.__numVertx = 0
         # self.__numFaces = 0
 
@@ -25,16 +26,14 @@ class ObjHandler():
         self.__textures = []
         self.__faceTextures = []
         self.__vertexTextures = []
-        
-        self.__loaded = {}
 
-    def load_obj(self, file, animation=False):
+    def load_obj(self, file):
         print("INCIO DE CARGA DE", file)
         f = open(file, "r")
-        if (animation):
-            filename = file.split("/")[4]
-        else:
-            filename = file.split("/")[3]
+
+        filename = file.split("/")[-1]
+        filename = filename.split(".")[0]
+
         self.__name = filename
         file_lines = f.readlines()
         for line in file_lines:
@@ -44,10 +43,7 @@ class ObjHandler():
             while("" in line_info):
                 line_info.remove('')
             self.__load_line(line_type, line_info)
-        if (not animation):
-            self.__eof()
-        else:
-            return self.__build_object(filename)
+        return self.__save()
             
 
     def __load_line(self, line_type, line):
@@ -87,8 +83,12 @@ class ObjHandler():
         self.__normals = self.__normals + [(float(line[0]), float(line[1]), float(line[2]))]
 
     def __load_vertextexture(self, line):
-        textureW = max(0, min(float(line[0]), 1))
-        textureH = max(0, min(float(line[1]), 1))
+        if self.__repeatTexture:
+            textureW = float(line[0])
+            textureH = float(line[1])
+        else:
+            textureW = max(0, min(float(line[0]), 1))
+            textureH = max(0, min(float(line[1]), 1))
         #Carga de texturas
         self.__textures = self.__textures + [(textureW, textureH)]
 
@@ -102,10 +102,9 @@ class ObjHandler():
                     self.__load_face_textures(faces)
                 else:
                     self.__load_face_normals(faces)
-            else:         
-                for face in line:
-                    self.__elements = self.__elements + [(int(face) - 1)]
-                    self.__arrayElements = self.__arrayElements + [self.__arrays[int(face) - 1]]
+            else:
+                self.__elements = self.__elements + [(int(face) - 1)]
+                self.__arrayElements = self.__arrayElements + [self.__arrays[int(face) - 1]]
 
     def __load_face_normals(self, faces):
         vertexFace = faces[0]
@@ -141,41 +140,10 @@ class ObjHandler():
         comment = " ".join(line)
         print("COMENTARIO DEL ARCHIVO:", comment)
 
-    def __eof(self):
-        #Revisión de última línea
-        print("FIN DE CARGA DE ARCHIVO")
-        self.__save()
-
     def __save(self):
         # Guarda el objeto cargado
+        print("FIN DE CARGA DE ARCHIVO")
         print("GUARDANDO DATOS EN CLAVE:", self.__name)
-        self.__loaded.update({ 
-            self.__name: {
-                "Name": self.__name,
-                "Arrays": self.__arrays, 
-                "Elements": self.__elements, 
-                "ArrayElements": self.__arrayElements,
-                "Normals": self.__normals,
-                "FaceNormals": self.__faceNormals,
-                "VertexNormals": self.__vertexNormals,
-                "Textures": self.__textures,
-                "FaceTextures": self.__faceTextures,
-                "VertexTextures": self.__vertexTextures
-            } 
-        })
-        self.__reset()
-
-    def __build_object(self, filename):
-        # Retorna el objeto en vez de guardarlo (ANIMACIONES)
-
-        # Cleansing del nombre del archivo
-        splitted_name = filename.split("_")
-        splitted_name = splitted_name[1:]
-        separator = "_"
-        name = separator.join(splitted_name)
-
-        self.__name = name.split(".")[0]
-
         object = {
             "Name": self.__name,
             "Arrays": self.__arrays, 
@@ -188,6 +156,7 @@ class ObjHandler():
             "FaceTextures": self.__faceTextures,
             "VertexTextures": self.__vertexTextures
         }
+
         self.__reset()
         return object
     
@@ -204,11 +173,3 @@ class ObjHandler():
         self.__textures = []
         self.__faceTextures = []
         self.__vertexTextures = []
-
-    def get_obj(self, obj_name):
-        # Obtención de un objeto guardado
-        return self.__loaded[obj_name]
-
-    def get_all(self):
-        # Obtención de todas las keys
-        return list(self.__loaded.keys())

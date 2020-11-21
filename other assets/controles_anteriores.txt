@@ -1,0 +1,55 @@
+        # Pasar eventos a ObjController
+        # for event in pygame.event.get():
+        #     if event.type == pygame.QUIT:
+        #         pygame.quit()
+        #         quit()
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == pygame.K_ESCAPE:
+        #             pygame.quit()
+        #             quit()
+        #         if event.key == pygame.K_w:
+        #             prof += 0.25
+        #         if event.key == pygame.K_s:
+        #             prof -= 0.25
+        #         if event.key == pygame.K_k:
+        #             texture = 0
+        #             actual_texture = 0
+
+        #             actual_obj += 1
+        #             if (actual_obj >= len(keys)):
+        #                 actual_obj = 0
+        #             load_obj = obj_handler.get_obj(keys[actual_obj])
+        #         if event.key == pygame.K_z:
+        #             zEnable = not zEnable
+        #             if zEnable:
+        #                 glEnable(GL_CULL_FACE)
+        #             else:
+        #                 glDisable(GL_CULL_FACE)
+        #         if event.key == pygame.K_c:
+        #             clockW = not clockW
+        #             if clockW:
+        #                 glFrontFace(GL_CW)
+        #             else:
+        #                 glFrontFace(GL_CCW)
+        #         if event.key == pygame.K_l:
+        #             lineMode = not lineMode
+        #             if lineMode:
+        #                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        #             else:
+        #                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        #         if event.key == pygame.K_t:
+        #             glActiveTexture(GL_TEXTURE0)
+        #             texture = texture_handler.bind_texture(box, actual_texture)
+        #             glBindTexture(GL_TEXTURE_2D, texture)
+        #             if (texture > 0):
+        #                 actual_texture += 1
+        #                 if (actual_texture >= box["TextureImage"]["Total"]):
+        #                     actual_texture = 0
+        #         if event.key == pygame.K_m:
+        #             if (not activeAnimation):
+        #                 obj_animations = box["Animations"]
+        #                 all_categories = len(obj_animations["Keys"]) - 1
+        #                 all_frames = obj_animations["Categories"][category]["Frames"]
+        #                 max_frames = len(all_frames) - 1
+        #                 load_obj_backup = box
+        #                 activeAnimation = True
