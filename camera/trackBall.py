@@ -18,11 +18,8 @@ class TrackBall():
         translate(-self.foco[0], -self.foco[1], -self.foco[2])
 
     def walk(self, dist):
-        x = math.cos(math.radians(self.rot * math.pi/180)) * dist
-        z = math.sin(math.radians(self.rot * math.pi/180)) * dist
+        x = -math.cos(math.radians(self.rot * math.pi/180)) * dist
+        z = -math.sin(math.radians(self.rot * math.pi/180)) * dist
 
-        print("Posiciones de Camera", self.foco)
-        print("X y Z de Camara", (x,z))
-
-        self.foco[0] += x
-        self.foco[2] += z
+        self.foco[0] -= x
+        self.foco[2] -= z

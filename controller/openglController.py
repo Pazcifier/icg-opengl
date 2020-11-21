@@ -41,6 +41,15 @@ def add_light(light, diffuse=[], specular=[], position=[0,0,0,1]):
 
 # CONFIGURATORS
 
+def configure_light_position(light, position):
+    """
+    Modifica la posición de la luz
+
+    light       -- Parámetro OpenGL (REQUERIDO)
+    position    -- Nueva posición de la luz (REQUERIDO)
+    """
+    glLight(light, GL_POSITION, position)
+
 def configure_frustum(left, right, bottom, top, distNear, distFar):
     """
     Aplica glFrustum

@@ -17,7 +17,7 @@ from controller.animController import AnimationController
 # Rework de las cámaras para que sean referentes a un modelo
 
 def main():
-    angle = 0
+    light_angle = 0
     # Inicialización
     ## Pygame
     pygame.init()
@@ -27,18 +27,30 @@ def main():
     ## Parsers
     playerController = ObjController(True)
     planeController = ObjController(False, True)
+    knightController = ObjController(False)
+    boxController = ObjController(False)
 
     playerController.load_model("./assets/models/hueteotl_stand_0.obj")
     playerController.load_textures("./assets/textures/hueteotl")
-    # playerController.load_animations("./assets/animations/hueteotl")
+    playerController.load_animations("./assets/animations/hueteotl")
 
     planeController.load_model("./assets/models/plane.obj")
     planeController.load_textures("./assets/textures/plane")
 
+    knightController.load_model("./assets/models/knight_texturas.obj")
+    knightController.load_textures("./assets/textures/knight")
+    knightController.load_animations("./assets/animations/knight")
+
+    boxController.load_model("./assets/models/box_texturas.obj")
+    boxController.load_textures("./assets/textures/box")
+
     player = playerController.get_obj()
     plane = planeController.get_obj()
+    knight = knightController.get_obj()
+    box = boxController.get_obj()
 
-    animationController = AnimationController(player, playerController.get_actions())
+    animationControllerPlayer = AnimationController(player)
+    animationControllerKnight = AnimationController(knight)
 
     ## OpenGL
     set_background_color(0, 132, 250)
@@ -58,6 +70,9 @@ def main():
     enable(GL_LIGHT0)
     add_light(GL_LIGHT0, [1,1,1,1], [1,1,1,1])
 
+    enable(GL_LIGHT1)
+    add_light(GL_LIGHT1, [1, 0, 0, 1], [1,0,0,1])
+
     enable(GL_LIGHTING)
 
     enable(GL_DEPTH_TEST)
@@ -76,61 +91,6 @@ def main():
             
             keys = pygame.key.get_pressed()
             playerController.controls(keys, event.type)
-        # Pasar eventos a ObjController
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         pygame.quit()
-        #         quit()
-        #     if event.type == pygame.KEYDOWN:
-        #         if event.key == pygame.K_ESCAPE:
-        #             pygame.quit()
-        #             quit()
-        #         if event.key == pygame.K_w:
-        #             prof += 0.25
-        #         if event.key == pygame.K_s:
-        #             prof -= 0.25
-        #         if event.key == pygame.K_k:
-        #             texture = 0
-        #             actual_texture = 0
-
-        #             actual_obj += 1
-        #             if (actual_obj >= len(keys)):
-        #                 actual_obj = 0
-        #             load_obj = obj_handler.get_obj(keys[actual_obj])
-        #         if event.key == pygame.K_z:
-        #             zEnable = not zEnable
-        #             if zEnable:
-        #                 glEnable(GL_CULL_FACE)
-        #             else:
-        #                 glDisable(GL_CULL_FACE)
-        #         if event.key == pygame.K_c:
-        #             clockW = not clockW
-        #             if clockW:
-        #                 glFrontFace(GL_CW)
-        #             else:
-        #                 glFrontFace(GL_CCW)
-        #         if event.key == pygame.K_l:
-        #             lineMode = not lineMode
-        #             if lineMode:
-        #                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
-        #             else:
-        #                 glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-        #         if event.key == pygame.K_t:
-        #             glActiveTexture(GL_TEXTURE0)
-        #             texture = texture_handler.bind_texture(box, actual_texture)
-        #             glBindTexture(GL_TEXTURE_2D, texture)
-        #             if (texture > 0):
-        #                 actual_texture += 1
-        #                 if (actual_texture >= box["TextureImage"]["Total"]):
-        #                     actual_texture = 0
-        #         if event.key == pygame.K_m:
-        #             if (not activeAnimation):
-        #                 obj_animations = box["Animations"]
-        #                 all_categories = len(obj_animations["Keys"]) - 1
-        #                 all_frames = obj_animations["Categories"][category]["Frames"]
-        #                 max_frames = len(all_frames) - 1
-        #                 load_obj_backup = box
-        #                 activeAnimation = True
 
         ## Configuraciones
         set_matrix_mode(GL_MODELVIEW)
@@ -138,7 +98,9 @@ def main():
         identity()
         translate(0, 0, -30)
         rotate(-90, True, False, False)
-        angle += 0.1
+
+        light_angle += 0.1
+        configure_light_position(GL_LIGHT1, [light_angle, light_angle, light_angle])
 
         # playerController.get_camera().elev = angle
 
@@ -152,7 +114,10 @@ def main():
 
         ## Animaciones
         if playerController.hasAnimations():
-            player = animationController.play_animation(playerController.get__action())
+            player = animationControllerPlayer.play_animation(playerController.get__action())
+
+        if knightController.hasAnimations():
+            knight = animationControllerKnight.play_animation(0)
 
         ## Dibujado
         playerController.load_camera()
@@ -161,6 +126,17 @@ def main():
         drawArrays(plane)
         translate(0, 0, 24)
 
+        translate(100, 0, 0)
+        rotate(180, False, False, True)
+        knightController.bind_texture(GL_TEXTURE0, "knight")
+        drawArrays(knight)
+
+        translate(0, 50, 0)
+        knightController.bind_texture(GL_TEXTURE0, "knight_good")
+        drawArrays(knight)
+
+        translate(100, -50, 0)
+        rotate(-180, False, False, True)
         playerController.load_character()
         playerController.bind_texture(GL_TEXTURE0, "hueteotl")
         drawArrays(player)

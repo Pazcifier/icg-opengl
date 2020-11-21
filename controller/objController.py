@@ -90,7 +90,6 @@ class ObjController():
 
     def controls(self, keys, event):
         if event == pygame.KEYUP:
-            print("STOP")
             if self.__crouch:
                 self.__action = action["CROUCH"]
             else:
@@ -108,20 +107,15 @@ class ObjController():
                     self.__action = action["MOVE"]
                 
                 if keys[pygame.K_w]:
-                    print("Hacia adelante")
                     self.__move(5)
                 if keys[pygame.K_s]:
-                    print("Hacia atrás")
                     self.__move(-5)
                 if keys[pygame.K_a]:
-                    print("Hacia izquierda")
                     self.__rotate(-5)
                 if keys[pygame.K_d]:
-                    print("Hacia derecha")
                     self.__rotate(5)
 
             if (keys[pygame.K_LCTRL] or keys[pygame.K_RCTRL]):
-                print("AGACHADO")
                 self.__action = action["CROUCH"]
                 self.__crouch = not self.__crouch
 
@@ -147,15 +141,12 @@ class ObjController():
         self.__crouch = False
 
     def __move(self, dist):
-        # self.__walk(dist)
+        self.__walk(dist)
         self.__camera.walk(dist)
 
     def __walk(self, dist):
         x = math.cos(math.radians(self.__rotation * math.pi/180)) * dist
         z = math.sin(math.radians(self.__rotation * math.pi/180)) * dist
-
-        print("Posiciones de Player", self.__position)
-        print("X y Z de Player", (x,z))
 
         self.__position[0] += x
         self.__position[2] += z
@@ -163,4 +154,3 @@ class ObjController():
     def __rotate(self, rot):
         self.__rotation -= rot
         self.__camera.rot += rot
-        print(self.__rotation, self.__camera.rot)

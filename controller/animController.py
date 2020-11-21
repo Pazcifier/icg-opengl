@@ -2,9 +2,17 @@ import pygame
 from pygame.locals import *
 
 class AnimationController():
-    def __init__(self, obj, actions):
+    def __init__(self, obj):
         self.__obj = obj
-        self.__actions = actions
+        self.__actions = {
+            "NONE": 0,
+            "MOVE": 1,
+            "CROUCH": 2,
+            "CROUCH_MOVE": 3,
+            "PRAISE": 4,
+            "TAUNT": 5,
+            "JUMP": 6
+        }
         
         self.__animation = None
         self.__frame = -1
