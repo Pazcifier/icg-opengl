@@ -8,6 +8,7 @@ El siguiente presenta las herramientas utilizadas, estructura del proyecto, manu
 El engine se desarrolló en **Python 3.7.0 32-bit** utilizando el IDE **Visual Studio Code** en su versión **1.5.1**, el proyecto posee dos dependencias externas extra:
 - **PyGame v. 1.9.6**, un framework para el desarrollo de videojuegos en el lenguaje Python, utilizando principalmente para campos de visión y lectura de teclas (o eventos)
 - **PyOpenGL v. 3.1.5**, un framework que traduce las funcionalidades de OpenGL al lenguaje Python
+
 Si se desea, el proyecto viene con un entorno virtual con la versión **Python 3.6.0**
 
 ## Estructura
@@ -19,6 +20,7 @@ Dentro del mismo proyecto, hay otras módulos internos que son utilizadas para h
     - **models** para los archivos .obj
     - **textures** para las texturas de un objeto
     - **animations** para los frames de animación de un objeto 
+
 Las dos últimas contienen módulos dependiendo del modelo que le pertenezcan.
 - Carpeta **camera**, contiene dos implementaciones de cámaras que fueron las vistas en clases: 
     - **fps.py** que contiene la implementación de una cámara en primera persona
